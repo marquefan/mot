@@ -15,7 +15,7 @@ app.config.from_pyfile("config.cfg")
 
 #mongod running on port 27017 on default!
 app.config["MONGO_DBNAME"] = "memesoftoday_db"
-app.config["MONGO_URI"] = "mongodb://admin:Sorgerweg11@ds263137.mlab.com:63137/memesoftoday_db"
+app.config["MONGO_URI"] = "mongodb://USERNAME:PASSWORD@ds263137.mlab.com:63137/DB_NAME"
 
 mongo = PyMongo(app)
 
