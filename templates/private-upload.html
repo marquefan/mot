@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<body>
+<a href="/"><<< Home</a>
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		{% for message in messages %}
+			<i>{{ message }}</i><br/>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+
+	<form action='/privateUpload' method='post' enctype='multipart/form-data'>
+    	<input type='file' name='uploaded_file' multiple="">
+    	<input type='submit' value='Upload'>
+  	</form>
+</body>
+</html>

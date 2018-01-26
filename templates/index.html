@@ -1,0 +1,146 @@
+{% include 'layout.html' %}
+
+
+
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		{% for message in messages %}
+ 		<strong>{{message}}</strong>
+		{% endfor %}
+		
+	{% endif %}
+{% endwith %}
+
+{% if session.username %}
+	<h3>Welcome {{ session.username }}</h3>
+	<a href={{ url_for('logout') }}><p>Logout</p></a>
+
+	{% if session.username == "admin" %}
+		<p><a href="/privateUpload">File Upload</a></p>
+	{% endif %}
+
+{% else %}
+
+<button class="btnShowForm" id="btnShowLoginForm">Log In</button>
+<button class="btnShowForm" id="btnShowRegisterForm">Register</button>
+
+<form name="login_form" id="login_form" method="post" action="/login">
+	<button id="btnLogin">Log In</button>
+	<br/><input type="text" name="login_username" id="login_username" />
+	<br/><input type="password" name="login_password" id="login_password" />
+</form>
+
+<form name="register_form" id="register_form" method="post" action="/register">
+	<button id="btnRegister">Register</button>
+	<br/><input type="text" name="register_username" id="register_username" />
+	<br/><input type="password" name="register_password" id="register_password" />
+</form>
+{% endif %}
+
+<!-- jQuery unveil plugin -->
+<img src='data:image/png;base64,{{ img.split("$$$")[0] }}' id="main_meme" class='{{ img.split("$$$")[1] }}'/>
+
+<script type="text/javascript">
+	// ajax request
+
+	function newImage(direction) {
+		//direction = like or disliked
+		var liked = direction=="left" ? true : false;
+
+		sendback = {
+			liked: liked,
+			target: $("#main_meme").attr("class") 
+		};
+
+		$.ajax({
+			url: "/retrieveImage",
+			data: sendback,
+			type: "POST",
+			success: function(response){
+				package = response.split("$$$");
+				setTimeout(function(){
+					$("#main_meme").removeClass("animated fadeOutLeft fadeOutRight fadeIn");
+
+					$("#main_meme").attr("src", "data:image/png;base64,"+package[0]);
+					$("#main_meme").attr("class", package[1]);
+					$('#main_meme').addClass('animated fadeIn');
+
+
+				}, 400);
+
+			},
+			error: function(error){
+				console.log("error while retrieving new image: "+error);
+			}
+
+		})
+	}
+
+
+	// Arrow Key bindings
+	$(document).keyup(function(e){
+		switch(e.which) {
+			case 37: //left
+				console.log("left");
+				$('#main_meme').addClass('animated fadeOutLeft');
+				newImage("left");
+				$('#main_meme').addClass('animated fadeIn');
+				
+			break;
+
+			case 39: //right
+				console.log("right");
+				$('#main_meme').addClass('animated fadeOutRight');
+				$('#main_meme').addClass('animated fadeIn');
+
+				newImage("right");
+				
+			break;
+
+			default: return;
+		}
+		e.preventDefault();
+	});
+
+
+</script>
+
+<script type="text/javascript">
+/*
+ $(function() {
+ 	$("#btnLogin").click(function() {
+
+ 		$.ajax({
+ 			url: "/login",
+ 			data: $("#login_form").serialize(),
+ 			type: "POST",
+ 			success: function(response) {
+ 				console.log(response);
+ 			},
+ 			error: function(error) {
+ 				console.log(error);
+ 			}
+ 		});
+ 	});
+ });
+ $(function() {
+ 	$("#btnRegister").click(function() {
+
+ 		$.ajax({
+ 			url: "/register",
+ 			data: $("#register_form").serialize(),
+ 			type: "POST",
+ 			success: function(response) {
+ 				console.log(response);
+ 			},
+ 			error: function(error) {
+ 				console.log(error);
+ 			}
+ 		});
+ 	});
+ });
+*/
+</script>
+
+</body>
+</html>
